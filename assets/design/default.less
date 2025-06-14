@@ -1,5 +1,5 @@
 :root {
-  --default-padding: 10px;
+  --default-padding: 10;
   --default-font-size: 16px;
 }
 
@@ -9,6 +9,7 @@
 }
 
 html, body {
+  .font( "Inter", sans-serif, #000000, 500, var( --default-font-size ) );
   height: 100%;
   margin: 0;
   padding: 0;
@@ -25,24 +26,39 @@ html, body {
   flex-wrap: @flexWrap;
 }
 
-.font( @fontName, @fontSerif, @fontColor, @fontWeight, @fontSize){
-  .toRem( font-size, @fontSize );
+.rem( @property, @list ) {
+  @n: length(@list);
+
+  // Only convert numbers that are not percentages or 0;
+  ._merge( @px ) when ( isnumber(@px) ) and not ( ispercentage(@px) ) and not ( @px = 0 ) {
+      @rem: ( @px / @base );
+      @{property}+_: unit(@rem, rem);
+  }
+  ._merge( @px ) when ( default() ) {
+      @{property}+_: @px;
+  }
+
+  ._loop( @n ) when ( @n > 0 ) {
+    ._loop((@n - 1));
+
+    @val: extract(@list, @n);
+    ._merge( @val ); // merges values onto @property with space character.
+  }
+
+  ._loop( @n );
+}
+
+.font( @fontName, @fontSerif, @fontColor, @fontWeight, @fontSize ){
+  .rem( font-size, @fontSize );
 
   font-family: @fontName, @fontSerif;
   color: @fontColor;
   font-weight: @fontWeight;
 }
 
-.toRem( @property, @value ){
-  @pxValue: @value;
-  @remValue: ( @value / var( --default-font-size ) );
-  @{property}: ~"@{remValue}rem";
-  @{property}: ~"@{pxValue}px";
-}
-
 .ico( @fontSize, @marginTop ){
-  .toRem( margin-top, @marginTop );
-  .toRem( font-size, @fontSize );
+  .rem( margin-top, @marginTop );
+  .rem( font-size, @fontSize );
 
   display: block;
 }
