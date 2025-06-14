@@ -1,0 +1,48 @@
+:root {
+  --default-padding: 10px;
+  --default-font-size: 16px;
+}
+
+* {
+  box-sizing: border-box;
+  outline: none;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+/* Functions */
+
+.d_flex( @flexDirection, @alignItems, @justifyContent, @flexWrap ){
+  display: flex;
+  flex-direction: @flexDirection;
+  justify-content: @justifyContent;
+  align-items: @alignItems;
+  flex-wrap: @flexWrap;
+}
+
+.font( @fontName, @fontSerif, @fontColor, @fontWeight, @fontSize){
+  .toRem( font-size, @fontSize );
+
+  font-family: @fontName, @fontSerif;
+  color: @fontColor;
+  font-weight: @fontWeight;
+}
+
+.toRem( @property, @value ){
+  @pxValue: @value;
+  @remValue: ( @value / var( --default-font-size ) );
+  @{property}: ~"@{remValue}rem";
+  @{property}: ~"@{pxValue}px";
+}
+
+.ico( @fontSize, @marginTop ){
+  .toRem( margin-top, @marginTop );
+  .toRem( font-size, @fontSize );
+
+  display: block;
+}
